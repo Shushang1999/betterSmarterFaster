@@ -88,6 +88,7 @@ def utility(graph):
 
             temp_utility_array = []
             for agent_new in agent_move:
+                temp_utility = 0
                 if agent_new == prey:
                     temp_utility = 0
                     temp_utility_array.append(temp_utility)
@@ -96,7 +97,6 @@ def utility(graph):
                     temp_utility = math.inf
                     temp_utility_array.append(temp_utility)
                     continue
-                temp_utility = 0
                 for pred_new in pred_move:
                     for prey_new in prey_move:
                         temp_prob = prey_move[prey_new] * pred_move[pred_new]
@@ -109,7 +109,8 @@ def utility(graph):
             # temp_utility = []
 
             min_utility = min(temp_utility_array)
-            
+            if len(find_path.bfs(G,agent,pred)) == 2:
+                    min_utility = math.inf
             utility_rewards_new[agent,prey,pred] = [min_utility + reward, reward]
 
         for key in utility_rewards:
@@ -122,11 +123,11 @@ def utility(graph):
         print(step_size)
 
     for key in utility_rewards:
-        with open("./utility_2ndGraph.txt","a") as o:
+        with open("./utility_1stGraph.txt","a") as o:
             o.write("{}\t".format(key))
             o.write("{}\n".format(utility_rewards[key]))
     
-    with open("utility_dict_2nd_graph","wb") as utility_file:
+    with open("utility_dict_1st_graph","wb") as utility_file:
         pickle.dump(utility_rewards,utility_file,protocol=pickle.HIGHEST_PROTOCOL)
 
     # with open("utility_dict_2nd_graph","rb") as handle:
@@ -139,7 +140,7 @@ def utility(graph):
 
 if __name__ == "__main__":
     # G = temp_graph.graph_setup()
-    G = environment.graph_setup()
-    nx.write_gpickle(G,"myGraph2.gpickle")
-    # G = nx.read_gpickle("myGraph.gpickle")
+    # G = environment.graph_setup()
+    # nx.write_gpickle(G,"myGraph2.gpickle")
+    G = nx.read_gpickle("myGraph.gpickle")
     utility(G)
